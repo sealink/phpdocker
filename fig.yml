@@ -5,6 +5,6 @@ web:
   volumes:
     - ./log:/var/log
   environment:
-    GIT_REPO: booking-app
-    GIT_BRANCH: master
+    GIT_REPO:
+    GIT_BRANCH:
 
