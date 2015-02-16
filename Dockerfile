@@ -37,6 +37,8 @@ RUN sed -i -e"s/worker_processes 1/worker_processes 5/" /etc/nginx/nginx.conf # 
 RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
 RUN sed -i "s/.*conf\.d\/\*\.conf;.*/&\n    include \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf
+# Change to root for mounting of local files.
+RUN sed -i "s/user  nginx/user  root/" /etc/nginx/nginx.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # tweak php-fpm config
@@ -52,10 +54,10 @@ RUN sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php5/
 RUN sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php5/fpm/pool.d/www.conf
 
 # fix ownership of sock file for php-fpm as our version of nginx runs as nginx
-RUN sed -i -e "s/user = www-data/user = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/group = www-data/group = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/listen.owner = www-data/listen.owner = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/listen.group = www-data/listen.group = nginx/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/user = www-data/user = root/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/group = www-data/group = root/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/listen.owner = www-data/listen.owner = root/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/listen.group = www-data/listen.group = root/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php5/fpm/pool.d/www.conf
 RUN find /etc/php5/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
