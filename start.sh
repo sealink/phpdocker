@@ -6,13 +6,13 @@ echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
 # Pull down code form git for our site!
 if [ ! -z "$GIT_REPO" ]; then
-  rm /usr/share/nginx/html/*
+  rm /usr/cms*
   if [ ! -z "$GIT_BRANCH" ]; then
-    git clone -b $GIT_BRANCH $GIT_REPO /usr/share/nginx/html/
+    git clone -b $GIT_BRANCH $GIT_REPO /usr/cms
   else
-    git clone $GIT_REPO /usr/share/nginx/html/
+    git clone $GIT_REPO /usr/cms
   fi
-  chown -Rf nginx.nginx /usr/share/nginx/*
+  chown -Rf nginx.nginx /usr/cms*
 fi
 
 # Tweak nginx to match the workers to cpu's

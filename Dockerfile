@@ -67,9 +67,10 @@ RUN mkdir -p /etc/nginx/ssl/
 ADD ./nginx-site.conf /etc/nginx/sites-available/default.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
-# add test PHP file
-ADD ./index.php /usr/share/nginx/html/index.php
-RUN chown -Rf nginx.nginx /usr/share/nginx/html/
+
+# setup nginx public dir
+RUN mkdir -p /usr/cms/public
+RUN chown -Rf nginx.nginx /usr/cms/public
 
 # Supervisor Config
 RUN /usr/bin/easy_install supervisor
