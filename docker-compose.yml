@@ -4,6 +4,7 @@ web:
     - '8080:80'
   volumes:
     - ./log:/var/log
+    - /srv/cms
   environment:
     GIT_REPO:
     GIT_BRANCH:
