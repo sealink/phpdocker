@@ -18,7 +18,7 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # Install Basic Requirements
-RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl
+RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl vim
 
 # Install PHP
 RUN apt-get -y install php5-fpm php-apc php5-cli php5-dev
