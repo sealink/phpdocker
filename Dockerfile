@@ -21,7 +21,7 @@ RUN apt-get -y upgrade
 RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl vim
 
 # Install PHP
-RUN apt-get -y install php5-fpm php-apc php5-cli php5-dev
+RUN apt-get -y install php5-fpm php5-cli php5-dev
 
 # Install Extra PHP Modules
 RUN apt-get -y install php5-curl php5-imagick php5-mcrypt php5-mysql
