@@ -24,13 +24,11 @@ RUN apt-get -y install nginx python-software-properties python-setuptools softwa
 RUN apt-get -y install php5-fpm php5-cli php5-dev
 
 # Install Extra PHP Modules
-RUN apt-get -y install php5-curl php5-imagick php5-mcrypt php5-mysql
+RUN apt-get -y install php5-curl php5-imagick php5-mcrypt php5-mysql php5-redis
 
 # Enable php mods
 RUN php5enmod mcrypt
 
-# Install Memcached
-RUN apt-get -y install memcached php5-memcached
 
 # tweak nginx config
 RUN sed -i -e"s/worker_processes 1/worker_processes 5/" /etc/nginx/nginx.conf # gets over written by start.sh to match cpu's on container
