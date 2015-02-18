@@ -29,6 +29,8 @@ RUN apt-get -y install php5-curl php5-imagick php5-mcrypt php5-mysql php5-redis
 # Enable php mods
 RUN php5enmod mcrypt
 
+# Clean
+RUN apt-get clean && rm -r /var/lib/apt/lists/*
 
 # tweak nginx config
 RUN sed -i -e"s/worker_processes 1/worker_processes 5/" /etc/nginx/nginx.conf # gets over written by start.sh to match cpu's on container
