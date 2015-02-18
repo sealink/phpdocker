@@ -74,6 +74,7 @@ RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/defau
 
 # setup nginx public dir
 RUN mkdir -p /usr/cms/public
+ADD index.php /usr/cms/public/index.php
 RUN chown -Rf nginx.nginx /usr/cms/public
 
 # Supervisor Config
