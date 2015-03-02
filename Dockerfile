@@ -39,6 +39,8 @@ RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size
 RUN sed -i "s/.*conf\.d\/\*\.conf;.*/&\n    include \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf
 # Change to root for mounting of local files.
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+# Add font types
+RUN sed -i -e "s@}@application/x-font-ttf ttf; font/opentype otf; application/vnd.ms-fontobject eot; font/x-woff woff;}@g" /etc/nginx/mime.types
 
 # tweak php-fpm config
 RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
@@ -68,6 +70,7 @@ RUN rm -Rf /etc/nginx/conf.d/*
 RUN mkdir -p /etc/nginx/sites-available/
 RUN mkdir -p /etc/nginx/sites-enabled/
 RUN mkdir -p /etc/nginx/ssl/
+RUN mkdir -p /etc/nginx/site-includes
 ADD ./nginx-site.conf /etc/nginx/sites-available/default.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
