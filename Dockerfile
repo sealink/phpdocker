@@ -20,6 +20,15 @@ RUN apt-get -y upgrade
 # Install Basic Requirements
 RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl vim
 
+# Language
+RUN apt-get -y install language-pack-en-base
+RUN export LC_ALL=en_US.UTF-8
+RUN export LANG=en_US.UTF-8
+
+RUN echo "deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu trusty main" > /etc/apt/sources.list.d/ondrej-php5-5_6-trusty.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
+RUN apt-get update
+
 # Install PHP
 RUN apt-get -y install php5-fpm php5-cli php5-dev
 
