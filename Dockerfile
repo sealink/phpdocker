@@ -13,8 +13,10 @@ RUN wget -q http://nginx.org/keys/nginx_signing.key -O- | sudo apt-key add -
 RUN echo deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx >> /etc/apt/sources.list
 RUN echo deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx >> /etc/apt/sources.list
 
-# Update System
-RUN apt-get update
+# Add Node sources and apt-get update
+RUN curl -sL https://deb.nodesource.com/setup_5.x | bash -
+
+# Upgrade system
 RUN apt-get -y upgrade
 
 # Install Basic Requirements
@@ -25,62 +27,68 @@ RUN apt-get -y install language-pack-en-base
 RUN export LC_ALL=en_US.UTF-8
 RUN export LANG=en_US.UTF-8
 
-RUN echo "deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu trusty main" > /etc/apt/sources.list.d/ondrej-php5-5_6-trusty.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
-RUN apt-get update
-
 # Install PHP
-RUN apt-get -y install php5-fpm php5-cli php5-dev
+RUN add-apt-repository ppa:ondrej/php -y && \
+    apt-get update && \
+    apt-get clean && rm -r /var/lib/apt/lists/*
+
+RUN add-apt-repository ppa:ondrej/php -y
+RUN apt-get -y install php7.0-fpm php7.0-cli php7.0-dev
 
 # Install Extra PHP Modules
-RUN apt-get -y install php5-curl php5-imagick php5-mcrypt php5-mysql php5-redis
+RUN apt-get -y install php7.0-curl php7.0-imagick php7.0-mcrypt php7.0-mysql php7.0-redis
+
+# Install Nodejs
+RUN apt-get install -y build-essential nodejs
 
 # Enable php mods
-RUN php5enmod mcrypt
+RUN php7enmod mcrypt
 
 # Clean
 RUN apt-get clean && rm -r /var/lib/apt/lists/*
 
 # tweak nginx config
-RUN sed -i -e"s/worker_processes 1/worker_processes 5/" /etc/nginx/nginx.conf # gets over written by start.sh to match cpu's on container
-RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
-RUN sed -i "s/.*conf\.d\/\*\.conf;.*/&\n    include \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf
-# Change to root for mounting of local files.
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-# Add font types
-RUN sed -i -e "s@}@application/x-font-ttf ttf; font/opentype otf; application/vnd.ms-fontobject eot; font/x-woff woff;}@g" /etc/nginx/mime.types
+# gets over written by start.sh to match cpu's on container
+RUN sed -i -e"s/worker_processes 1/worker_processes 5/" /etc/nginx/nginx.conf && \
+    sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf && \
+    sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf && \
+    sed -i "s/.*conf\.d\/\*\.conf;.*/&\n    include \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf && \
+    # Change to root for mounting of local files.
+    echo "daemon off;" >> /etc/nginx/nginx.conf && \
+    # Add font types
+    sed -i -e "s@}@application/x-font-ttf ttf; font/opentype otf; application/vnd.ms-fontobject eot; font/x-woff woff;}@g" /etc/nginx/mime.types
 
 # tweak php-fpm config
-RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
-RUN sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 30M/g" /etc/php5/fpm/php.ini
-RUN sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 30M/g" /etc/php5/fpm/php.ini
-RUN sed -i -e "s/memory_limit\s*=\s*128M/memory_limit = 256M/g" /etc/php5/fpm/php.ini
-RUN sed -i -e 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini
-RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
-RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini  && \
+    sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 30M/g" /etc/php5/fpm/php.ini && \
+    sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 30M/g" /etc/php5/fpm/php.ini && \
+    sed -i -e "s/memory_limit\s*=\s*128M/memory_limit = 256M/g" /etc/php5/fpm/php.ini && \
+    sed -i -e 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini && \
+    sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf && \
+    sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php5/fpm/pool.d/www.conf
 
 
 # fix ownership of sock file for php-fpm as our version of nginx runs as nginx
-RUN sed -i -e "s/user = www-data/user = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/group = www-data/group = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/listen.owner = www-data/listen.owner = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/listen.group = www-data/listen.group = nginx/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php5/fpm/pool.d/www.conf
-RUN find /etc/php5/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
+RUN sed -i -e "s/user = www-data/user = nginx/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/group = www-data/group = nginx/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/listen.owner = www-data/listen.owner = nginx/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/listen.group = www-data/listen.group = nginx/g" /etc/php5/fpm/pool.d/www.conf && \
+    sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php5/fpm/pool.d/www.conf && \
+    find /etc/php5/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
 # nginx site conf
-RUN rm -Rf /etc/nginx/conf.d/*
-RUN mkdir -p /etc/nginx/sites-available/
-RUN mkdir -p /etc/nginx/sites-enabled/
-RUN mkdir -p /etc/nginx/ssl/
-RUN mkdir -p /etc/nginx/site-includes
-ADD ./nginx-site.conf /etc/nginx/sites-available/default.conf
+RUN rm -Rf /etc/nginx/conf.d/* && \
+    mkdir -p /etc/nginx/sites-available/ && \
+    mkdir -p /etc/nginx/sites-enabled/ && \
+    mkdir -p /etc/nginx/ssl/ && \
+    mkdir -p /etc/nginx/site-includes
+
+ADD ./nginx-site.conf /etc/nginx/sites-available/default.conf && \
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 
