@@ -26,8 +26,5 @@ Thumbs.db
 /.eclipse
 *.vi
 
-# Docker files
-
-php5-fpm.log
-access.log
-error.log
+# logs files
+*.log
