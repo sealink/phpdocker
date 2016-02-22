@@ -35,6 +35,13 @@ RUN apt-get -y install php7.0-fpm php7.0-cli php7.0-dev
 # Install Extra PHP Modules
 RUN apt-get -y install php7.0-curl php-imagick php7.0-mcrypt php7.0-mysql php-redis
 
+# Install Composer
+RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
+    php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === 'fd26ce67e3b237fffd5e5544b45b0d92c41a4afe3e3f778e942e43ce6be197b9cdc7c251dcde6e2a52297ea269370680') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); }" && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');" && \
+    mv composer.phar /usr/local/bin/composer
+
 # Add Node sources and apt-get update
 RUN curl -sL https://deb.nodesource.com/setup_5.x | bash - && \
     apt-get install -y build-essential nodejs
