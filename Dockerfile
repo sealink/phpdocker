@@ -18,7 +18,7 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # Install Basic Requirements
-RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl vim zip unzip
+RUN apt-get -y install nginx python-software-properties python-setuptools software-properties-common curl vim zip unzip git
 
 # Language
 RUN apt-get -y install language-pack-en-base
