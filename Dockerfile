@@ -116,6 +116,5 @@ RUN chmod 755 /start.sh
 EXPOSE 443
 EXPOSE 80
 
-STOPSIGNAL SIGINT
 
 CMD ["/start.sh"]
