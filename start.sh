@@ -36,4 +36,4 @@ do
   done
 
 # Start supervisord and services
-/usr/local/bin/supervisord -n
+exec /usr/local/bin/supervisord -n
