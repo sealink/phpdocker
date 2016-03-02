@@ -117,4 +117,4 @@ EXPOSE 443
 EXPOSE 80
 
 
-CMD ["/bin/bash", "/start.sh"]
+CMD ["/start.sh"]
