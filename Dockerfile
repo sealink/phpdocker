@@ -30,11 +30,11 @@ RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
 RUN apt-get update
 
 # Install PHP
-RUN apt-get -y install php7.0-fpm php7.0-cli php7.0-dev
+RUN apt-get -y install php7.0-fpm php7.0-cli php7.0-dev php7.0-common \
+    php7.0-json php7.0-opcache php7.0-readline php7.0-mbstring php7.0-curl \
+    php-imagick php7.0-mcrypt php7.0-mysql php7.0-xml php-redis
 
-# Install Extra PHP Modules
-RUN apt-get -y install php7.0-curl php-imagick php7.0-mcrypt php7.0-mysql php-redis
-
+RUN apt-get -y autoremove
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
