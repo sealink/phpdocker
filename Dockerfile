@@ -36,10 +36,7 @@ RUN apt-get -y install php7.0-fpm php7.0-cli php7.0-dev
 RUN apt-get -y install php7.0-curl php-imagick php7.0-mcrypt php7.0-mysql php-redis
 
 # Install Composer
-RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
-    php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === 'fd26ce67e3b237fffd5e5544b45b0d92c41a4afe3e3f778e942e43ce6be197b9cdc7c251dcde6e2a52297ea269370680') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); }" && \
-    php composer-setup.php && \
-    php -r "unlink('composer-setup.php');" && \
+RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     # generate accesskey for app https://github.com/organizations/sealink/settings/applications/308702
     composer config -g github-oauth.github.com 8e52e76a7ff35c03076f0d2382ad205b5a06f42f
