@@ -1,3 +1,3 @@
 # phpdocker
 
-nginx will listen at /usr/cms/public
+nginx will listen at /app/public

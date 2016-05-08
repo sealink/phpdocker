@@ -3,13 +3,13 @@
 
 # Pull down code form git for our site!
 if [ ! -z "$GIT_REPO" ]; then
-  rm /usr/cms*
+  rm /app*
   if [ ! -z "$GIT_BRANCH" ]; then
-    git clone -b $GIT_BRANCH $GIT_REPO /usr/cms
+    git clone -b $GIT_BRANCH $GIT_REPO /app
   else
-    git clone $GIT_REPO /usr/cms
+    git clone $GIT_REPO /app
   fi
-  chown -Rf nginx.nginx /usr/cms*
+  chown -Rf nginx.nginx /app*
 fi
 
 # Tweak nginx to match the workers to cpu's
@@ -21,7 +21,7 @@ sed -i -e "s/worker_processes 5/worker_processes $procs/" /etc/nginx/nginx.conf
 if [ ! -z "$ENV_REPLACE_FOLDER" ]; then
    folder=$ENV_REPLACE_FOLDER
 else
-   folder=/usr/cms/public
+   folder=/app/public
 fi
 
 echo "Replacing all env vars in ${folder}"
