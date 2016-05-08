@@ -1,10 +1,10 @@
 FROM ubuntu:14.04.4
 
-# Surpress Upstart errors/warning
+# Suppress Upstart errors/warning
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
-# Let the conatiner know that there is no tty
+# Let the container know that there is no tty
 ENV DEBIAN_FRONTEND noninteractive
 
 # Add sources for latest nginx
@@ -98,7 +98,7 @@ RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/defau
 # setup nginx public dir
 RUN mkdir -p /app/public
 ADD index.php /app/public/index.php
-RUN chown -Rf nginx.nginx /app/public
+# RUN chown -Rf nginx:nginx /app/public
 
 # Supervisor Config
 RUN /usr/bin/easy_install supervisor
