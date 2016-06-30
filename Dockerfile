@@ -42,7 +42,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     composer config -g github-oauth.github.com 8e52e76a7ff35c03076f0d2382ad205b5a06f42f
 
 # Add Node sources and apt-get update
-RUN curl -sL https://deb.nodesource.com/setup_5.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get install -y build-essential nodejs
 
 # Clean
