@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.4
+FROM ubuntu:16.04
 
 # Suppress Upstart errors/warning
 RUN dpkg-divert --local --rename --add /sbin/initctl
