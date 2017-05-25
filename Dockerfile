@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Add sources for latest nginx
 RUN apt-get clean && apt-get update && apt-get install -y wget
-RUN wget -q http://nginx.org/keys/nginx_signing.key -O- | sudo apt-key add -
+RUN wget -q http://nginx.org/keys/nginx_signing.key -O- | apt-key add -
 RUN echo deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx >> /etc/apt/sources.list
 RUN echo deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx >> /etc/apt/sources.list
 
@@ -43,7 +43,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 
 # yarn package manager
 RUN apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg && \
-    echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 # Add Node sources and apt-get update
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get install -y build-essential nodejs yarn
